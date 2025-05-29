@@ -31,7 +31,7 @@ Work is done in `develop` branch. Merging to `master` implies a release, which m
 **Release process:**
 - Merge any feature branches into `develop`
 - Update `version` in `build.gradle.kt` to `X.Y.Z`
-- `git checkout master && git merge develop && git tag vX.Y.Z`
+- `git checkout master && git merge develop && git tag X.Y.Z` # no 'v'
 - `git push --all && git push --tags`
 - `git checkout develop` # back to work
 
