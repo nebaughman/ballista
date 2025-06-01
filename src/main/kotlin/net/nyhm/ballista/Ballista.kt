@@ -12,20 +12,19 @@ import org.eclipse.jetty.server.Server
 interface BallistaModule {
   /**
    * Configure the [JavalinConfig].
-   * Do not use [JavalinConfig.server]; instead use the `config(Server)` method.
    */
   fun config(config: JavalinConfig) {}
 
   /**
    * Configure the underlying Jetty [Server].
+   * @Deprecated To be removed; this can now be accomplished via JavalinConfig phase
    */
   fun config(server: Server) {}
 
   /**
-   * Configure the [Javalin] app instance.
-   * This is where to add routes, for example.
+   * Post-config, pre-start [Javalin] app instance configuration.
    */
-  fun config(app: Javalin) {}
+  fun config(app: Javalin) {} // TODO: rename (init, prep, ?)
 }
 
 /**
