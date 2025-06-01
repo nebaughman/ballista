@@ -62,7 +62,7 @@ class YourApp {
       .registerSingleton { ExposedDb(it.get()) } // depends on driver
       .registerSingleton { InfoDao(it.get()) } // depends on db
       .registerSingleton { InfoService(it.get()) } // depends on InfoDao
-      .registerSingleton { InfoApi() } // InfoService injected upon http request processing
+      .register(InfoApi()) // no construction dependencies, register instance
       .registerSingleton { HttpModule(it.get()) } // for example
       .registerSingleton(Processor::class) { DiProcessor(it) } // injection-based request processor
       .registerSingleton { Ballista(it.getAll(), it.get()) } // Ballista service
