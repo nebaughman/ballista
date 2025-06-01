@@ -12,11 +12,16 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.valueParameters
 
 /**
- * Report whether this context indicates it is an AJAX request.
+ * @Deprecated use [isXHR]
+ */
+fun Context.isAjax() = isXHR()
+
+/**
+ * Report whether this context indicates it is an XHR request.
  *
  * Security note: This is based on headers sent by the client, so there is no guarantee of accuracy.
  */
-fun Context.isAjax() = this.header("X-Requested-With") == "XMLHttpRequest"
+fun Context.isXHR() = this.header("X-Requested-With") == "XMLHttpRequest"
 
 /**
  * Resolve and process the endpoint with this request Context
