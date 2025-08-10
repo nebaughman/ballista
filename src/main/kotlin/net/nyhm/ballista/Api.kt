@@ -40,12 +40,16 @@ interface Processor {
 
 val ProcessorKey = Key<Processor>("processor")
 
+fun interface ParamResolver {
+  fun resolve(param: KParameter): Any?
+}
+
 /**
  * A [Processor] that uses a dependency injector to resolve dependencies.
  */
 class DiProcessor(
   private val di: Di,
-  private val resolver: ((param: KParameter) -> Any?) = { null }
+  private val resolver: ParamResolver = ParamResolver { null }
 ): Processor {
 
   override fun process(ctx: Context, endpoint: KFunction<*>) {
@@ -56,7 +60,7 @@ class DiProcessor(
       if (paramClass == Context::class) deps.add(ctx)
       else if (isBodyParam(it)) deps.add(ctx.bodyAsClass(paramClass.java))
       else {
-        val res = resolver(it)
+        val res = resolver.resolve(it)
         if (res != null) deps.add(res)
         else deps.add(di.get(paramClass))
       }
