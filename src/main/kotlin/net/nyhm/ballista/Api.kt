@@ -43,7 +43,10 @@ val ProcessorKey = Key<Processor>("processor")
 /**
  * A [Processor] that uses a dependency injector to resolve dependencies.
  */
-class DiProcessor(private val di: Di): Processor {
+class DiProcessor(
+  private val di: Di,
+  private val resolver: ((param: KParameter) -> Any?) = { null }
+): Processor {
 
   override fun process(ctx: Context, endpoint: KFunction<*>) {
 
@@ -52,7 +55,11 @@ class DiProcessor(private val di: Di): Processor {
       val paramClass = it.type.classifier as KClass<*>
       if (paramClass == Context::class) deps.add(ctx)
       else if (isBodyParam(it)) deps.add(ctx.bodyAsClass(paramClass.java))
-      else deps.add(di.get(paramClass))
+      else {
+        val res = resolver(it)
+        if (res != null) deps.add(res)
+        else deps.add(di.get(paramClass))
+      }
     }
 
     try {
