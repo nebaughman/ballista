@@ -41,7 +41,7 @@ interface Processor {
 val ProcessorKey = Key<Processor>("processor")
 
 fun interface ParamResolver {
-  fun resolve(param: KParameter): Any?
+  fun resolve(ctx: Context, param: KParameter): Any?
 }
 
 /**
@@ -49,7 +49,7 @@ fun interface ParamResolver {
  */
 class DiProcessor(
   private val di: Di,
-  private val resolver: ParamResolver = ParamResolver { null }
+  private val resolver: ParamResolver = ParamResolver { _,_ -> null }
 ): Processor {
 
   override fun process(ctx: Context, endpoint: KFunction<*>) {
@@ -60,7 +60,7 @@ class DiProcessor(
       if (paramClass == Context::class) deps.add(ctx)
       else if (isBodyParam(it)) deps.add(ctx.bodyAsClass(paramClass.java))
       else {
-        val res = resolver.resolve(it)
+        val res = resolver.resolve(ctx, it)
         if (res != null) deps.add(res)
         else deps.add(di.get(paramClass))
       }
